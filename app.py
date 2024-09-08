@@ -6,7 +6,8 @@ from flasgger import Swagger, swag_from  # Import Flasgger
 # Create an instance of the Flask application
 app = Flask(__name__)
 PORT = 5001
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:4200"}})
+
 
 # Initialize Swagger with configuration
 swagger = Swagger(app, config={
@@ -34,7 +35,7 @@ def set_swagger_host():
             "description": "API documentation for the user management system.",
             "version": "1.0.0"
         },
-        "host": 'python-alpha-pearl.vercel.app',  # Set the host from the current request
+        "host": request.host,  # Set the host from the current request
         "basePath": "/",
         "schemes": ["http", "https"],
         "paths": {},  # Empty initially; filled by Flasgger
