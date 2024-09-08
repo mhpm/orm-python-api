@@ -1,4 +1,4 @@
-from flask import Flask, Response, request, jsonify
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import sqlite3
 from flasgger import Swagger, swag_from  # Import Flasgger
@@ -22,16 +22,23 @@ swagger = Swagger(app, config={
     "static_url_path": "/flasgger_static",
     "swagger_ui": True,
     "specs_route": "/"
-}, template={
-    "swagger": "2.0",
-    "info": {
-        "title": "Python API",  # Set your desired title here
-        "description": "API documentation for the user management system.",
-        "version": "1.0.0"
-    },
-    "host": f"localhost:{PORT}",
-    "basePath": "/",
 })
+
+# Update Swagger configuration to set the host dynamically
+@app.before_request
+def set_swagger_host():
+    swagger.template = {
+        "swagger": "2.0",
+        "info": {
+            "title": "Python API",
+            "description": "API documentation for the user management system.",
+            "version": "1.0.0"
+        },
+        "host": request.host,  # Set the host from the current request
+        "basePath": "/",
+        "schemes": ["http", "https"],
+        "paths": {},  # Empty initially; filled by Flasgger
+    }
 
 # Helper function to connect to the SQLite database
 def get_db_connection():
@@ -227,9 +234,3 @@ def delete_user(user_id):
 # Run the Flask app when the script is executed directly
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=PORT)
-
-# # Main entry point for Vercel
-# def handler(request, *args, **kwargs):
-#     def start_response(status, headers):
-#         pass  # This is needed to satisfy the WSGI start_response interface
-#     return Response(app(request.environ, start_response), status=200)
