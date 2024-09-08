@@ -1,4 +1,4 @@
-from flask import Flask, Response, request, jsonify, render_template, url_for
+from flask import Flask, Response, request, jsonify
 from flask_cors import CORS
 import sqlite3
 from flasgger import Swagger, swag_from  # Import Flasgger
@@ -40,7 +40,7 @@ def get_db_connection():
     return conn
 
 # Route to get all users (Read operation)
-@app.route('/api/users', methods=['GET'])
+@app.route('/users', methods=['GET'])
 @swag_from({
     'responses': {
         200: {
@@ -68,7 +68,7 @@ def get_users():
     return jsonify([dict(row) for row in users])
 
 # Route to get a specific user by ID (Read operation)
-@app.route('/api/users/<int:user_id>', methods=['GET'])
+@app.route('/users/<int:user_id>', methods=['GET'])
 @swag_from({
     'parameters': [
         {
@@ -107,7 +107,7 @@ def get_user(user_id):
     return jsonify(dict(user))
 
 # Route to create a new user (Create operation)
-@app.route('/api/users', methods=['POST'])
+@app.route('/users', methods=['POST'])
 @swag_from({
     'parameters': [
         {
@@ -148,7 +148,7 @@ def create_user():
     return jsonify({'message': 'User created successfully'}), 201
 
 # Route to update an existing user (Update operation)
-@app.route('/api/users/<int:user_id>', methods=['PUT'])
+@app.route('/users/<int:user_id>', methods=['PUT'])
 @swag_from({
     'parameters': [
         {
@@ -198,7 +198,7 @@ def update_user(user_id):
     return jsonify({'message': 'User updated successfully'})
 
 # Route to delete a user (Delete operation)
-@app.route('/api/users/<int:user_id>', methods=['DELETE'])
+@app.route('/users/<int:user_id>', methods=['DELETE'])
 @swag_from({
     'parameters': [
         {
@@ -224,12 +224,12 @@ def delete_user(user_id):
 
     return jsonify({'message': 'User deleted successfully'})
 
+# Run the Flask app when the script is executed directly
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=PORT)
+
 # Main entry point for Vercel
 def handler(request, *args, **kwargs):
     def start_response(status, headers):
         pass  # This is needed to satisfy the WSGI start_response interface
     return Response(app(request.environ, start_response), status=200)
-
-# Run the Flask app when the script is executed directly
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=PORT)
