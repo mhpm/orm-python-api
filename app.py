@@ -34,7 +34,7 @@ def set_swagger_host():
             "description": "API documentation for the user management system.",
             "version": "1.0.0"
         },
-        "host": request.host,  # Set the host from the current request
+        "host": 'python-alpha-pearl.vercel.app',  # Set the host from the current request
         "basePath": "/",
         "schemes": ["http", "https"],
         "paths": {},  # Empty initially; filled by Flasgger
