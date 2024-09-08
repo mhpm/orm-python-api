@@ -228,8 +228,8 @@ def delete_user(user_id):
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=PORT)
 
-# Main entry point for Vercel
-def handler(request, *args, **kwargs):
-    def start_response(status, headers):
-        pass  # This is needed to satisfy the WSGI start_response interface
-    return Response(app(request.environ, start_response), status=200)
+# # Main entry point for Vercel
+# def handler(request, *args, **kwargs):
+#     def start_response(status, headers):
+#         pass  # This is needed to satisfy the WSGI start_response interface
+#     return Response(app(request.environ, start_response), status=200)
