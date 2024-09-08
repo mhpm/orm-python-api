@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import sqlite3
@@ -6,7 +7,7 @@ from flasgger import Swagger, swag_from  # Import Flasgger
 # Create an instance of the Flask application
 app = Flask(__name__)
 PORT = 5001
-CORS(app, resources={r"/*": {"origins": "http://localhost:4200"}})
+CORS(app)
 
 
 # Initialize Swagger with configuration
@@ -43,7 +44,16 @@ def set_swagger_host():
 
 # Helper function to connect to the SQLite database
 def get_db_connection():
-    conn = sqlite3.connect('database.db')
+    # Use a writable path
+    db_path = os.path.join('/tmp', 'database.db')
+    # If the database doesn't exist in /tmp, copy it from the deployed location
+    if not os.path.exists(db_path):
+        original_db_path = os.path.join(os.getcwd(), 'database.db')
+        if os.path.exists(original_db_path):
+            import shutil
+            shutil.copyfile(original_db_path, db_path)
+
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -224,13 +234,23 @@ def update_user(user_id):
     }
 })
 def delete_user(user_id):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('DELETE FROM users WHERE id = ?', (user_id,))
-    conn.commit()
-    conn.close()
-
-    return jsonify({'message': 'User deleted successfully'})
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM users WHERE id = ?', (user_id,))
+        conn.commit()
+        conn.close()
+        if cursor.rowcount == 0:
+            return jsonify({'error': 'User not found'}), 404  # User ID not found
+        return jsonify({'message': 'User deleted successfully'}), 200
+    except sqlite3.Error as e:
+        # Log the error details
+        app.logger.error(f"Database error: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+    except Exception as e:
+        # Log unexpected errors
+        app.logger.error(f"Unexpected error: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
 
 # Run the Flask app when the script is executed directly
 if __name__ == '__main__':

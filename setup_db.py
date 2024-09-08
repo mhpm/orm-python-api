@@ -1,8 +1,22 @@
+import os
 import sqlite3
 
 # Connect to the SQLite database (creates the database if it doesn't exist)
-conn = sqlite3.connect('database.db')
+def get_db_connection():
+    # Use a writable path
+    db_path = os.path.join('/tmp', 'database.db')
+    # If the database doesn't exist in /tmp, copy it from the deployed location
+    if not os.path.exists(db_path):
+        original_db_path = os.path.join(os.getcwd(), 'database.db')
+        if os.path.exists(original_db_path):
+            import shutil
+            shutil.copyfile(original_db_path, db_path)
 
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+conn = get_db_connection()
 # Create a cursor object using the cursor() method
 cursor = conn.cursor()
 
