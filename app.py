@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, url_for
+from flask import Flask, Response, request, jsonify, render_template, url_for
 from flask_cors import CORS
 import sqlite3
 from flasgger import Swagger, swag_from  # Import Flasgger
@@ -223,6 +223,12 @@ def delete_user(user_id):
     conn.close()
 
     return jsonify({'message': 'User deleted successfully'})
+
+# Main entry point for Vercel
+def handler(request, *args, **kwargs):
+    def start_response(status, headers):
+        pass  # This is needed to satisfy the WSGI start_response interface
+    return Response(app(request.environ, start_response), status=200)
 
 # Run the Flask app when the script is executed directly
 if __name__ == '__main__':
