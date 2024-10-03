@@ -84,8 +84,10 @@ def set_swagger_host():
 )
 def get_users():
     conn = get_db_connection()
-    users = conn.execute("SELECT id, first_name, last_name, email, role, avatar FROM users").fetchall()
-    
+    users = conn.execute(
+        "SELECT id, first_name, last_name, email, role, avatar FROM users"
+    ).fetchall()
+
     conn.close()
     return jsonify([dict(row) for row in users])
 
@@ -124,7 +126,10 @@ def get_users():
 )
 def get_user(user_id):
     conn = get_db_connection()
-    user = conn.execute("SELECT id, first_name, last_name, email, role, avatar FROM users WHERE id = ?", (user_id,)).fetchone()
+    user = conn.execute(
+        "SELECT id, first_name, last_name, email, role, avatar FROM users WHERE id = ?",
+        (user_id,),
+    ).fetchone()
     conn.close()
     if user is None:
         return jsonify({"error": "User not found"}), 404

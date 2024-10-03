@@ -1,0 +1,38 @@
+# schema.graphql
+
+type User {
+  id: ID!
+  first_name: String!
+  last_name: String!
+  email: String!
+  role: String
+  avatar: String
+}
+
+type Query {
+  users: [User!]!
+  user(user_id: ID!): User
+}
+
+type Mutation {
+  createUser(
+    first_name: String!,
+    last_name: String!,
+    email: String!,
+    password: String!,
+    role: String,
+    avatar: String
+  ): User!
+
+  updateUser(
+    user_id: ID!,
+    first_name: String,
+    last_name: String,
+    email: String,
+    role: String,
+    password: String,
+    avatar: String
+  ): User!
+
+  deleteUser(user_id: ID!): String!
+}
