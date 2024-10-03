@@ -15,8 +15,6 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get(
     "SECRET_KEY", "1237ac0393917173029ad602d3152bd523ce383e9a89790b098fbf4c6a461ad8"
 )
-
-PORT = 5001
 CORS(app)
 
 
@@ -292,4 +290,4 @@ app.register_blueprint(auth_bp)
 
 # Run the Flask app when the script is executed directly
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=PORT)
+    app.run(debug=True, host="0.0.0.0", port=5001)
