@@ -290,4 +290,4 @@ app.register_blueprint(auth_bp)
 
 # Run the Flask app when the script is executed directly
 if __name__ == "__main__":
-    app.run(debug=True, port=int(os.environ.get("PORT", 5000)))
+    app.run(debug=True, port=int(os.environ.get("PORT", 10000)))
