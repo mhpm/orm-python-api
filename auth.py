@@ -1,4 +1,3 @@
-import secrets
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from flasgger import swag_from
@@ -15,6 +14,7 @@ SECRET_KEY = os.environ.get(
 )
 if not SECRET_KEY:
     raise ValueError("No SECRET_KEY set for Flask application")
+
 
 # Route for user login (Authentication operation)
 @auth_bp.route("/login", methods=["POST"])
