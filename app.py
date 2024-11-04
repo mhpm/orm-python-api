@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from flask_cors import CORS
 from flasgger import Swagger  # Import Flasgger
 from dotenv import load_dotenv
@@ -10,7 +10,7 @@ load_dotenv()  # take environment variables from .env.
 
 # Create an instance of the Flask application
 app = Flask(__name__)
-app.config["SECRET_KEY"] = os.environ.get(
+app.config["SECRET_KEY"] = os.getenv(
     "SECRET_KEY", "1237ac0393917173029ad602d3152bd523ce383e9a89790b098fbf4c6a461ad8"
 )
 CORS(app)
